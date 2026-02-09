@@ -1,20 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import { useClientContext } from '@/context/ClientContext';
 import { usePracticeContext } from '@/context/PracticeContext';
-import { Client, Invoice } from '@/types';
+import { useServiceContext } from '@/context/ServiceContext';
+import { Client, Invoice, Service } from '@/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { showSuccess, showError } from '@/utils/toast';
-import { X } from 'lucide-react';
+import { X, ChevronsUpDown, Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CreateInvoicePopupProps {
   isOpen: boolean;
@@ -24,15 +22,18 @@ interface CreateInvoicePopupProps {
 const CreateInvoicePopup: React.FC<CreateInvoicePopupProps> = ({ isOpen, onClose }) => {
   const { clients, addClient } = useClientContext();
   const { addInvoice } = usePracticeContext();
+  const { services } = useServiceContext();
 
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isCreatingClient, setIsCreatingClient] = useState(false);
+  
+  const [clientSearchOpen, setClientSearchOpen] = useState(false);
 
   const [newClientName, setNewClientName] = useState('');
   const [newClientEmail, setNewClientEmail] = useState('');
 
   const [invoiceDueDate, setInvoiceDueDate] = useState('');
-  const [invoiceItems, setInvoiceItems] = useState([{ description: '', amount: '' }]);
+  const [invoiceItems, setInvoiceItems] = useState<{ serviceId: string | null; description: string; amount: string; }[]>([]);
 
   const handleCreateClient = () => {
     if (!newClientName || !newClientEmail) {
@@ -75,14 +76,27 @@ const CreateInvoicePopup: React.FC<CreateInvoicePopupProps> = ({ isOpen, onClose
     onClose();
   };
 
-  const handleItemChange = (index: number, field: 'description' | 'amount', value: string) => {
+  const handleItemAmountChange = (index: number, value: string) => {
     const newItems = [...invoiceItems];
-    newItems[index][field] = value;
+    newItems[index]['amount'] = value;
     setInvoiceItems(newItems);
   };
 
+  const handleServiceSelect = (index: number, serviceId: string) => {
+    const service = services.find(s => s.id === serviceId);
+    if (service) {
+        const newItems = [...invoiceItems];
+        newItems[index] = {
+            serviceId: service.id,
+            description: service.name,
+            amount: String(service.price)
+        };
+        setInvoiceItems(newItems);
+    }
+  }
+
   const handleAddItem = () => {
-    setInvoiceItems([...invoiceItems, { description: '', amount: '' }]);
+    setInvoiceItems([...invoiceItems, { serviceId: null, description: '', amount: '' }]);
   };
 
   const handleRemoveItem = (index: number) => {
@@ -96,7 +110,7 @@ const CreateInvoicePopup: React.FC<CreateInvoicePopupProps> = ({ isOpen, onClose
     setNewClientName('');
     setNewClientEmail('');
     setInvoiceDueDate('');
-    setInvoiceItems([{ description: '', amount: '' }]);
+    setInvoiceItems([]);
   };
 
   const handleClose = () => {
@@ -106,19 +120,41 @@ const CreateInvoicePopup: React.FC<CreateInvoicePopupProps> = ({ isOpen, onClose
 
   const renderClientSelection = () => (
     <div>
-      <Label htmlFor="client-select">Select a Client</Label>
-      <Select onValueChange={(clientId) => setSelectedClient(clients.find(c => c.id === clientId) || null)}>
-        <SelectTrigger id="client-select">
-          <SelectValue placeholder="Choose a client..." />
-        </SelectTrigger>
-        <SelectContent>
-          {clients.map((client) => (
-            <SelectItem key={client.id} value={client.id}>
-              {client.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Label>Select a Client</Label>
+        <Popover open={clientSearchOpen} onOpenChange={setClientSearchOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={clientSearchOpen}
+                    className="w-full justify-between mt-2"
+                >
+                    {selectedClient ? clients.find((client) => client.id === selectedClient.id)?.name : "Select client..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                <Command>
+                    <CommandInput placeholder="Search client..." />
+                    <CommandEmpty>No client found.</CommandEmpty>
+                    <CommandGroup>
+                        {clients.map((client) => (
+                            <CommandItem
+                                key={client.id}
+                                value={client.name}
+                                onSelect={() => {
+                                    setSelectedClient(client)
+                                    setClientSearchOpen(false)
+                                }}
+                            >
+                                <Check className={cn("mr-2 h-4 w-4", selectedClient?.id === client.id ? "opacity-100" : "opacity-0")} />
+                                {client.name}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </Command>
+            </PopoverContent>
+        </Popover>
       <p className="text-sm text-center my-4 text-muted-foreground">Or</p>
       <Button variant="outline" className="w-full" onClick={() => setIsCreatingClient(true)}>
         Create a New Client
@@ -165,17 +201,24 @@ const CreateInvoicePopup: React.FC<CreateInvoicePopupProps> = ({ isOpen, onClose
             <Label>Invoice Items</Label>
             {invoiceItems.map((item, index) => (
                 <div key={index} className="flex gap-2 mb-2 items-center">
-                    <Input 
-                        placeholder="Item description" 
-                        value={item.description}
-                        onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                    />
+                    <Select onValueChange={(serviceId) => handleServiceSelect(index, serviceId)} value={item.serviceId || ''}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select a service..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {services.map(service => (
+                                <SelectItem key={service.id} value={service.id}>
+                                    {service.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                     <Input 
                         type="number" 
                         placeholder="Amount" 
                         className="w-32 shrink-0"
                         value={item.amount}
-                        onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
+                        onChange={(e) => handleItemAmountChange(index, e.target.value)}
                     />
                     <Button variant="ghost" size="icon" className="shrink-0" onClick={() => handleRemoveItem(index)}>
                         <X className="h-4 w-4" />

@@ -206,7 +206,7 @@ const PracticeSettings = () => {
                   <CardTitle>Automations</CardTitle>
                 </div>
                 <Button size="sm" asChild>
-                  <Link to="/practice-settings/automations/new">Create Automation</Link>
+                  <Link to="automations/new">Create Automation</Link>
                 </Button>
               </div>
             </CardHeader>
@@ -244,7 +244,7 @@ const PracticeSettings = () => {
               <div className="flex items-center justify-between">
                 <CardTitle>Email & SMS Templates</CardTitle>
                 <Button size="sm" asChild>
-                  <Link to="/practice-settings/templates/new">Create Template</Link>
+                  <Link to="templates/new">Create Template</Link>
                 </Button>
               </div>
             </CardHeader>
@@ -260,7 +260,7 @@ const PracticeSettings = () => {
               <div className="flex items-center justify-between">
                 <CardTitle>Clinical Protocols</CardTitle>
                 <Button size="sm" asChild>
-                  <Link to="/practice-settings/protocols/new">Create Protocol</Link>
+                  <Link to="protocols/new">Create Protocol</Link>
                 </Button>
               </div>
             </CardHeader>

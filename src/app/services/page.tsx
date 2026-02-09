@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useServices } from '@/context/ServiceContext';
+import { useServiceContext } from '@/context/ServiceContext';
 import { Button } from '@/components/ui/button';
 import { Service } from '@/types';
 import { ServiceCard } from '@/components/ServiceCard';
@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const ServicesPage = () => {
-  const { services, addService, updateService, deleteService } = useServices();
+  const { services = [], addService, updateService, deleteService } = useServiceContext();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
 

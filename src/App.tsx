@@ -57,7 +57,7 @@ const App = () => (
                         <Route path="/messaging" element={<Messaging />} />
                         <Route path="/group-sessions" element={<GroupSessions />} />
                         <Route path="/programs" element={<Programs />} />
-                        <Route path="/practice-settings" element={<PracticeSettings />} />
+                        <Route path="/practice-settings/*" element={<PracticeSettings />} />
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/services" element={<ServicesPage />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

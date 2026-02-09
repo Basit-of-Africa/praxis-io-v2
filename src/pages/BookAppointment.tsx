@@ -8,7 +8,7 @@ import PaystackPayment from '@/components/PaystackPayment';
 import { Button } from '@/components/ui/button';
 import { showSuccess, showError } from '@/utils/toast';
 import { useAppointmentContext } from '@/context/AppointmentContext';
-import { useServices } from '@/context/ServiceContext'; // Import useServices
+import { useServiceContext } from '@/context/ServiceContext'; // Import useServiceContext
 import { Service } from '@/types';
 
 interface BookingDetails {
@@ -24,7 +24,7 @@ interface BookingDetails {
 
 const BookAppointment = () => {
   const { addAppointment } = useAppointmentContext();
-  const { services } = useServices(); // Get services from context
+  const { services } = useServiceContext(); // Get services from context
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [patientDetails, setPatientDetails] = useState<BookingDetails['patient'] | null>(null);
