@@ -4,13 +4,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-}
+import { Service } from "@/types";
 
 const mockServices: Service[] = [
   {
@@ -18,24 +12,46 @@ const mockServices: Service[] = [
     name: "General Consultation",
     description: "A standard consultation with a healthcare professional.",
     price: 50.00,
+    duration: 30,
   },
   {
     id: "2",
     name: "Follow-up Visit",
     description: "A follow-up appointment to review progress or results.",
     price: 30.00,
+    duration: 20,
   },
   {
     id: "3",
     name: "Nutritional Counseling",
     description: "Personalized advice on diet and nutrition.",
     price: 75.00,
+    duration: 60,
+    roleSpecific: ["Nutritionist", "Dietitian"],
   },
   {
     id: "4",
     name: "Physical Therapy Session",
     description: "A session with a licensed physical therapist.",
     price: 100.00,
+    duration: 45,
+    roleSpecific: ["Personal Trainer"],
+  },
+  {
+    id: "5",
+    name: "Therapy Session",
+    description: "Individual therapy for mental health support.",
+    price: 120.00,
+    duration: 50,
+    roleSpecific: ["Therapist", "Mental Health Professional"],
+  },
+  {
+    id: "6",
+    name: "Yoga Class",
+    description: "Personalized yoga instruction.",
+    price: 40.00,
+    duration: 60,
+    roleSpecific: ["Yoga Instructor"],
   },
 ];
 
