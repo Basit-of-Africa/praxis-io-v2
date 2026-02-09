@@ -8,16 +8,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Palette, Zap, Plug, Save } from "lucide-react";
+import { Palette, Zap, Plug, Save, CreditCard } from "lucide-react";
 
 const PracticeSettings = () => {
-  const { brandingSettings, integrations, automations, updateBranding, updateIntegration } =
-    usePracticeContext();
+  const { 
+    brandingSettings, 
+    integrations, 
+    automations, 
+    paymentSettings, 
+    updateBranding, 
+    updateIntegration,
+    updatePaymentSettings 
+  } = usePracticeContext();
 
   const [branding, setBranding] = useState(brandingSettings);
+  const [paystackKey, setPaystackKey] = useState(paymentSettings.paystackPublicKey || "");
 
   const handleSaveBranding = () => {
     updateBranding(branding);
+  };
+
+  const handleSavePayments = () => {
+    updatePaymentSettings({ paystackPublicKey: paystackKey });
   };
 
   return (
@@ -31,6 +43,7 @@ const PracticeSettings = () => {
           <TabsTrigger value="automations">Automations</TabsTrigger>
           <TabsTrigger value="templates">Templates</TabsTrigger>
           <TabsTrigger value="protocols">Protocols</TabsTrigger>
+          <TabsTrigger value="payments">Payments</TabsTrigger>
         </TabsList>
 
         <TabsContent value="branding">
@@ -178,20 +191,6 @@ const PracticeSettings = () => {
                   </div>
                 </div>
               ))}
-
-              <div className="border-t pt-4">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Available integrations:
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  <Badge variant="outline">Zoom</Badge>
-                  <Badge variant="outline">Stripe</Badge>
-                  <Badge variant="outline">PayPal</Badge>
-                  <Badge variant="outline">Mailchimp</Badge>
-                  <Badge variant="outline">Twilio</Badge>
-                  <Badge variant="outline">LabCorp</Badge>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -228,35 +227,17 @@ const PracticeSettings = () => {
                   ))}
                 </div>
               )}
-
-              <div className="border-t mt-6 pt-4">
-                <p className="text-sm font-semibold mb-2">Suggested Automations:</p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Send appointment reminders 24 hours before</li>
-                  <li>• Follow-up email after completed appointments</li>
-                  <li>• Birthday greetings to clients</li>
-                  <li>• Payment receipt emails</li>
-                  <li>• Client feedback requests</li>
-                </ul>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
-
+        
         <TabsContent value="templates">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Email & SMS Templates</CardTitle>
-                <Button size="sm">Create Template</Button>
-              </div>
+              <CardTitle>Email & SMS Templates</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                Create reusable templates for emails, SMS messages, notes, and treatment plans.
-                Use variables like {`{{client_name}}`}, {`{{appointment_date}}`}, and {`{{provider_name}}`} for
-                personalization.
-              </p>
+               <p className="text-muted-foreground">Create and manage your templates here.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -264,19 +245,43 @@ const PracticeSettings = () => {
         <TabsContent value="protocols">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Clinical Protocols</CardTitle>
-                <Button size="sm">Create Protocol</Button>
-              </div>
+              <CardTitle>Clinical Protocols</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                Define standardized clinical protocols and treatment workflows for your practice.
-                Protocols help ensure consistency and quality of care across all providers.
-              </p>
+               <p className="text-muted-foreground">Define and manage clinical protocols here.</p>
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="payments">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center">
+                <CreditCard className="h-5 w-5 mr-2" />
+                <CardTitle>Payment Settings</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="paystackKey">Paystack Public Key</Label>
+                <Input
+                  id="paystackKey"
+                  value={paystackKey}
+                  onChange={(e) => setPaystackKey(e.target.value)}
+                  placeholder="pk_live_..."
+                />
+                <p className="text-sm text-muted-foreground mt-2">
+                  This key is required to process payments with Paystack.
+                </p>
+              </div>
+              <Button onClick={handleSavePayments}>
+                <Save className="mr-2 h-4 w-4" />
+                Save Payment Settings
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
       </Tabs>
     </div>
   );

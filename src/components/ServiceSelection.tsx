@@ -1,74 +1,40 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Service } from "@/types";
-
-const mockServices: Service[] = [
-  {
-    id: "1",
-    name: "General Consultation",
-    description: "A standard consultation with a healthcare professional.",
-    price: 50.00,
-    duration: 30,
-  },
-  {
-    id: "2",
-    name: "Follow-up Visit",
-    description: "A follow-up appointment to review progress or results.",
-    price: 30.00,
-    duration: 20,
-  },
-  {
-    id: "3",
-    name: "Nutritional Counseling",
-    description: "Personalized advice on diet and nutrition.",
-    price: 75.00,
-    duration: 60,
-    roleSpecific: ["Nutritionist", "Dietitian"],
-  },
-  {
-    id: "4",
-    name: "Physical Therapy Session",
-    description: "A session with a licensed physical therapist.",
-    price: 100.00,
-    duration: 45,
-    roleSpecific: ["Personal Trainer"],
-  },
-  {
-    id: "5",
-    name: "Therapy Session",
-    description: "Individual therapy for mental health support.",
-    price: 120.00,
-    duration: 50,
-    roleSpecific: ["Therapist", "Mental Health Professional"],
-  },
-  {
-    id: "6",
-    name: "Yoga Class",
-    description: "Personalized yoga instruction.",
-    price: 40.00,
-    duration: 60,
-    roleSpecific: ["Yoga Instructor"],
-  },
-];
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Service } from '@/types';
 
 interface ServiceSelectionProps {
+  services: Service[];
   onServiceSelect: (service: Service | null) => void;
   selectedService: Service | null;
 }
 
-const ServiceSelection: React.FC<ServiceSelectionProps> = ({ onServiceSelect, selectedService }) => {
+const ServiceSelection: React.FC<ServiceSelectionProps> = ({ services, onServiceSelect, selectedService }) => {
+  if (services.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center p-10 border-2 border-dashed rounded-lg">
+        <h3 className="text-2xl font-semibold mb-4">No Services Found</h3>
+        <p className="text-muted-foreground mb-6">
+          It looks like there are no services available for booking right now.
+        </p>
+        <a href="/services">
+          <Button>Go to Services to Add Some</Button>
+        </a>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {mockServices.map((service) => (
+      {services.map((service) => (
         <Card
           key={service.id}
           className={cn(
-            "cursor-pointer hover:border-primary transition-colors",
-            selectedService?.id === service.id && "border-primary ring-2 ring-primary",
+            'cursor-pointer hover:border-primary transition-colors',
+            selectedService?.id === service.id && 'border-primary ring-2 ring-primary',
           )}
           onClick={() => onServiceSelect(service)}
         >

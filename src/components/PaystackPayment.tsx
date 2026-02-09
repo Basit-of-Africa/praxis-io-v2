@@ -14,6 +14,10 @@ interface PaystackPaymentProps {
   onClose: () => void;
 }
 
+interface PaystackReference {
+  reference: string;
+}
+
 const PaystackPayment: React.FC<PaystackPaymentProps> = ({
   amount,
   email,
@@ -39,7 +43,7 @@ const PaystackPayment: React.FC<PaystackPaymentProps> = ({
       return;
     }
     initializePayment(
-      (reference: any) => {
+      (reference: PaystackReference) => {
         // Payment was successful
         onSuccess(reference.reference);
       },

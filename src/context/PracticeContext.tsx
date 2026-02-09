@@ -9,6 +9,7 @@ import {
   Automation,
   BrandingSettings,
   Integration,
+  PaymentSettings,
 } from "@/types";
 import { showSuccess } from "@/utils/toast";
 
@@ -22,6 +23,7 @@ interface PracticeContextType {
   automations: Automation[];
   brandingSettings: BrandingSettings;
   integrations: Integration[];
+  paymentSettings: PaymentSettings;
   addProtocol: (protocol: Omit<Protocol, "id">) => void;
   addTemplate: (template: Omit<Template, "id">) => void;
   addPayment: (payment: Omit<Payment, "id">) => void;
@@ -31,6 +33,7 @@ interface PracticeContextType {
   updateAutomation: (id: string, automation: Partial<Automation>) => void;
   updateBranding: (settings: Partial<BrandingSettings>) => void;
   updateIntegration: (id: string, integration: Partial<Integration>) => void;
+  updatePaymentSettings: (settings: Partial<PaymentSettings>) => void;
 }
 
 const PracticeContext = createContext<PracticeContextType | undefined>(undefined);
@@ -59,6 +62,10 @@ const initialIntegrations: Integration[] = [
   },
 ];
 
+const initialPaymentSettings: PaymentSettings = {
+  paystackPublicKey: "",
+};
+
 export const PracticeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [protocols, setProtocols] = useState<Protocol[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -69,6 +76,7 @@ export const PracticeProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [automations, setAutomations] = useState<Automation[]>([]);
   const [brandingSettings, setBrandingSettings] = useState<BrandingSettings>(initialBranding);
   const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrations);
+  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings>(initialPaymentSettings);
 
   const addProtocol = (protocolData: Omit<Protocol, "id">) => {
     const newProtocol: Protocol = {
@@ -143,6 +151,11 @@ export const PracticeProvider: React.FC<{ children: ReactNode }> = ({ children }
     showSuccess("Integration updated successfully!");
   };
 
+  const updatePaymentSettings = (settings: Partial<PaymentSettings>) => {
+    setPaymentSettings((prev) => ({ ...prev, ...settings }));
+    showSuccess("Payment settings updated successfully!");
+  };
+
   return (
     <PracticeContext.Provider
       value={{
@@ -155,6 +168,7 @@ export const PracticeProvider: React.FC<{ children: ReactNode }> = ({ children }
         automations,
         brandingSettings,
         integrations,
+        paymentSettings,
         addProtocol,
         addTemplate,
         addPayment,
@@ -164,6 +178,7 @@ export const PracticeProvider: React.FC<{ children: ReactNode }> = ({ children }
         updateAutomation,
         updateBranding,
         updateIntegration,
+        updatePaymentSettings,
       }}
     >
       {children}

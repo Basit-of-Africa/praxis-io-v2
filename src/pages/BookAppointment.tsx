@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import ServiceSelection from "@/components/ServiceSelection";
-import AppointmentDatePicker from "@/components/AppointmentDatePicker";
-import BookingForm from "@/components/BookingForm";
-import PaystackPayment from "@/components/PaystackPayment";
-import { Button } from "@/components/ui/button";
-import { showSuccess, showError } from "@/utils/toast";
-import { format } from "date-fns";
-import { useAppointmentContext } from "@/context/AppointmentContext";
-import { Service } from "@/types";
+import React, { useState } from 'react';
+import ServiceSelection from '@/components/ServiceSelection';
+import AppointmentDatePicker from '@/components/AppointmentDatePicker';
+import BookingForm from '@/components/BookingForm';
+import PaystackPayment from '@/components/PaystackPayment';
+import { Button } from '@/components/ui/button';
+import { showSuccess, showError } from '@/utils/toast';
+import { useAppointmentContext } from '@/context/AppointmentContext';
+import { useServices } from '@/context/ServiceContext'; // Import useServices
+import { Service } from '@/types';
 
 interface BookingDetails {
   service: Service;
@@ -23,7 +23,8 @@ interface BookingDetails {
 }
 
 const BookAppointment = () => {
-  const { addAppointment } = useAppointmentContext(); // Use addAppointment from context
+  const { addAppointment } = useAppointmentContext();
+  const { services } = useServices(); // Get services from context
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [patientDetails, setPatientDetails] = useState<BookingDetails['patient'] | null>(null);
@@ -42,7 +43,7 @@ const BookAppointment = () => {
   const handleBookingFormSubmit = (data: BookingDetails['patient']) => {
     setPatientDetails(data);
     if (!selectedService || !selectedDate) {
-      showError("An unexpected error occurred. Please restart the booking process.");
+      showError('An unexpected error occurred. Please restart the booking process.');
       setStep(1); // Reset to start
       return;
     }
@@ -51,7 +52,7 @@ const BookAppointment = () => {
 
   const handlePaymentSuccess = (reference: string) => {
     if (!selectedService || !selectedDate || !patientDetails) {
-      showError("An unexpected error occurred after payment. Please check your booking history.");
+      showError('An unexpected error occurred after payment. Please check your booking history.');
       setStep(1); // Reset to start
       return;
     }
@@ -73,7 +74,7 @@ const BookAppointment = () => {
   };
 
   const handlePaymentClose = () => {
-    showError("Payment was not completed. You can try again or go back.");
+    showError('Payment was not completed. You can try again or go back.');
     // User can stay on step 4 or go back to step 3
   };
 
@@ -92,6 +93,7 @@ const BookAppointment = () => {
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Select a Service</h2>
           <ServiceSelection
+            services={services} // Pass services to ServiceSelection
             selectedService={selectedService}
             onServiceSelect={handleServiceSelect}
           />

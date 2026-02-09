@@ -25,6 +25,8 @@ import { AppointmentProvider } from "./context/AppointmentContext";
 import { ProviderProvider } from "./context/ProviderContext";
 import { PracticeProvider } from "./context/PracticeContext";
 import { ClientEngagementProvider } from "./context/ClientEngagementContext";
+import { ServiceProvider } from "./context/ServiceContext";
+import ServicesPage from "./app/services/page";
 
 const queryClient = new QueryClient();
 
@@ -39,27 +41,30 @@ const App = () => (
             <ClientEngagementProvider>
               <ClientProvider>
                 <AppointmentProvider>
-                  <Layout>
-                    <Routes>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/clients" element={<Clients />} />
-                      <Route path="/clients/:clientId" element={<ClientDetails />} />
-                      <Route path="/calendar" element={<Calendar />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/book-appointment" element={<BookAppointment />} />
-                      <Route path="/appointments/:appointmentId" element={<AppointmentDetails />} />
-                      <Route path="/providers" element={<Providers />} />
-                      <Route path="/billing" element={<Billing />} />
-                      <Route path="/charting" element={<Charting />} />
-                      <Route path="/messaging" element={<Messaging />} />
-                      <Route path="/group-sessions" element={<GroupSessions />} />
-                      <Route path="/programs" element={<Programs />} />
-                      <Route path="/practice-settings" element={<PracticeSettings />} />
-                      <Route path="/analytics" element={<Analytics />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Layout>
+                  <ServiceProvider>
+                    <Layout>
+                      <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/clients" element={<Clients />} />
+                        <Route path="/clients/:clientId" element={<ClientDetails />} />
+                        <Route path="/calendar" element={<Calendar />} />
+                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/book-appointment" element={<BookAppointment />} />
+                        <Route path="/appointments/:appointmentId" element={<AppointmentDetails />} />
+                        <Route path="/providers" element={<Providers />} />
+                        <Route path="/billing" element={<Billing />} />
+                        <Route path="/charting" element={<Charting />} />
+                        <Route path="/messaging" element={<Messaging />} />
+                        <Route path="/group-sessions" element={<GroupSessions />} />
+                        <Route path="/programs" element={<Programs />} />
+                        <Route path="/practice-settings" element={<PracticeSettings />} />
+                        <Route path="/analytics" element={<Analytics />} />
+                        <Route path="/services" element={<ServicesPage />} />
+                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Layout>
+                  </ServiceProvider>
                 </AppointmentProvider>
               </ClientProvider>
             </ClientEngagementProvider>

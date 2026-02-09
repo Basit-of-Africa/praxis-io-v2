@@ -14,6 +14,7 @@ import {
   UsersRound,
   BookOpen,
   BarChart3,
+  Clipboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -41,6 +42,11 @@ const navItems = [
     name: "Providers",
     icon: Stethoscope,
     path: "/providers",
+  },
+  {
+    name: "Services",
+    icon: Clipboard,
+    path: "/services",
   },
   {
     name: "Messaging",
