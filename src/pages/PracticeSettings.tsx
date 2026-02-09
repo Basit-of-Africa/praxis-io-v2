@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { usePracticeContext } from "@/context/PracticeContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,14 +12,15 @@ import { Badge } from "@/components/ui/badge";
 import { Palette, Zap, Plug, Save, CreditCard } from "lucide-react";
 
 const PracticeSettings = () => {
-  const { 
-    brandingSettings, 
-    integrations, 
-    automations, 
-    paymentSettings, 
-    updateBranding, 
+  const {
+    brandingSettings,
+    integrations,
+    automations,
+    paymentSettings,
+    updateBranding,
     updateIntegration,
-    updatePaymentSettings 
+    updateAutomation,
+    updatePaymentSettings,
   } = usePracticeContext();
 
   const [branding, setBranding] = useState(brandingSettings);
@@ -115,7 +117,7 @@ const PracticeSettings = () => {
                 <Input
                   id="customDomain"
                   placeholder="yourdomain.com"
-                  value={branding.customDomain || ""}
+                  value={branding.customDomain || ''}
                   onChange={(e) =>
                     setBranding({ ...branding, customDomain: e.target.value })
                   }
@@ -126,7 +128,7 @@ const PracticeSettings = () => {
                 <Label htmlFor="bookingPageMessage">Booking Page Message</Label>
                 <Textarea
                   id="bookingPageMessage"
-                  value={branding.bookingPageMessage || ""}
+                  value={branding.bookingPageMessage || ''}
                   onChange={(e) =>
                     setBranding({
                       ...branding,
@@ -142,7 +144,7 @@ const PracticeSettings = () => {
                 <Textarea
                   id="emailFooter"
                   placeholder="Contact information, disclaimer, etc."
-                  value={branding.emailFooter || ""}
+                  value={branding.emailFooter || ''}
                   onChange={(e) =>
                     setBranding({ ...branding, emailFooter: e.target.value })
                   }
@@ -203,7 +205,9 @@ const PracticeSettings = () => {
                   <Zap className="h-5 w-5 mr-2" />
                   <CardTitle>Automations</CardTitle>
                 </div>
-                <Button size="sm">Create Automation</Button>
+                <Button size="sm" asChild>
+                  <Link to="/practice-settings/automations/new">Create Automation</Link>
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -222,7 +226,10 @@ const PracticeSettings = () => {
                           When {automation.trigger.replace("_", " ")} → {automation.action.replace("_", " ")}
                         </p>
                       </div>
-                      <Switch checked={automation.enabled} />
+                      <Switch
+                        checked={automation.enabled}
+                        onCheckedChange={(checked) => updateAutomation(automation.id, { enabled: checked })}
+                      />
                     </div>
                   ))}
                 </div>
@@ -230,14 +237,19 @@ const PracticeSettings = () => {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="templates">
           <Card>
             <CardHeader>
-              <CardTitle>Email & SMS Templates</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Email & SMS Templates</CardTitle>
+                <Button size="sm" asChild>
+                  <Link to="/practice-settings/templates/new">Create Template</Link>
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-               <p className="text-muted-foreground">Create and manage your templates here.</p>
+              <p className="text-muted-foreground">Create and manage your templates here.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -245,10 +257,15 @@ const PracticeSettings = () => {
         <TabsContent value="protocols">
           <Card>
             <CardHeader>
-              <CardTitle>Clinical Protocols</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Clinical Protocols</CardTitle>
+                <Button size="sm" asChild>
+                  <Link to="/practice-settings/protocols/new">Create Protocol</Link>
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-               <p className="text-muted-foreground">Define and manage clinical protocols here.</p>
+              <p className="text-muted-foreground">Define and manage clinical protocols here.</p>
             </CardContent>
           </Card>
         </TabsContent>

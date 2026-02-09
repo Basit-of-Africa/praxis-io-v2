@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, FileText, CreditCard, Plus } from "lucide-react";
 import { format } from "date-fns";
+import CreateInvoicePopup from "./CreateInvoicePopup";
 
 const Billing = () => {
   const { payments, invoices } = usePracticeContext();
+  const [isCreateInvoiceOpen, setCreateInvoiceOpen] = useState(false);
 
   const totalRevenue = payments
     .filter((p) => p.status === "completed")
@@ -21,7 +23,7 @@ const Billing = () => {
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Billing & Payments</h1>
-        <Button>
+        <Button onClick={() => setCreateInvoiceOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Create Invoice
         </Button>
@@ -202,6 +204,7 @@ const Billing = () => {
           </CardContent>
         </Card>
       </div>
+      <CreateInvoicePopup isOpen={isCreateInvoiceOpen} onClose={() => setCreateInvoiceOpen(false)} />
     </div>
   );
 };
