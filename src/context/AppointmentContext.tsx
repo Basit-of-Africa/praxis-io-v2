@@ -1,28 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { Appointment, Service } from "@/types";
 import { showSuccess, showError } from "@/utils/toast";
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-}
-
-interface Appointment {
-  id: string;
-  service: Service;
-  date: Date;
-  patient: {
-    fullName: string;
-    email: string;
-    phone: string;
-    notes?: string;
-  };
-  paymentReference?: string;
-  status: "booked" | "completed" | "cancelled";
-}
 
 interface AppointmentContextType {
   appointments: Appointment[];
@@ -35,17 +15,19 @@ const AppointmentContext = createContext<AppointmentContextType | undefined>(und
 const initialMockAppointments: Appointment[] = [
   {
     id: "app1",
-    service: { id: "1", name: "General Consultation", description: "A standard consultation", price: 50.00 },
-    date: new Date(new Date().setDate(new Date().getDate() + 2)), // 2 days from now
+    service: { id: "1", name: "General Consultation", description: "A standard consultation", price: 50.00, duration: 30 },
+    date: new Date(new Date().setDate(new Date().getDate() + 2)),
     patient: { fullName: "Alice Smith", email: "alice.smith@example.com", phone: "123-456-7890" },
     status: "booked",
+    sessionType: "in-person",
   },
   {
     id: "app2",
-    service: { id: "2", name: "Follow-up Visit", description: "A follow-up appointment", price: 30.00 },
-    date: new Date(new Date().setDate(new Date().getDate() - 1)), // 1 day ago
+    service: { id: "2", name: "Follow-up Visit", description: "A follow-up appointment", price: 30.00, duration: 20 },
+    date: new Date(new Date().setDate(new Date().getDate() - 1)),
     patient: { fullName: "Bob Johnson", email: "bob.j@example.com", phone: "098-765-4321" },
     status: "completed",
+    sessionType: "telehealth",
   },
 ];
 

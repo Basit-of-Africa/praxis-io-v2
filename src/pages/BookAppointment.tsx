@@ -8,14 +8,8 @@ import PaystackPayment from "@/components/PaystackPayment";
 import { Button } from "@/components/ui/button";
 import { showSuccess, showError } from "@/utils/toast";
 import { format } from "date-fns";
-import { useAppointmentContext } from "@/context/AppointmentContext"; // Import useAppointmentContext
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-}
+import { useAppointmentContext } from "@/context/AppointmentContext";
+import { Service } from "@/types";
 
 interface BookingDetails {
   service: Service;

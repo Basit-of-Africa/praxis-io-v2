@@ -1,17 +1,13 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { ClientFormValues } from "@/components/ClientForm";
+import { Client } from "@/types";
 import { showSuccess, showError } from "@/utils/toast";
-
-interface Client extends ClientFormValues {
-  id: string;
-}
 
 interface ClientContextType {
   clients: Client[];
-  addClient: (clientData: ClientFormValues) => void;
-  updateClient: (clientId: string, clientData: ClientFormValues) => void;
+  addClient: (clientData: Omit<Client, "id">) => void;
+  updateClient: (clientId: string, clientData: Partial<Client>) => void;
   deleteClient: (clientId: string) => void;
 }
 
@@ -39,22 +35,22 @@ const initialMockClients: Client[] = [
 export const ClientProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [clients, setClients] = useState<Client[]>(initialMockClients);
 
-  const addClient = (clientData: ClientFormValues) => {
+  const addClient = (clientData: Omit<Client, "id">) => {
     const newClient: Client = {
-      id: `cl${Date.now()}`, // More robust ID generation
+      id: `cl${Date.now()}`,
       ...clientData,
     };
     setClients((prevClients) => [...prevClients, newClient]);
     showSuccess(`Client ${newClient.fullName} added successfully!`);
   };
 
-  const updateClient = (clientId: string, clientData: ClientFormValues) => {
+  const updateClient = (clientId: string, clientData: Partial<Client>) => {
     setClients((prevClients) =>
       prevClients.map((client) =>
         client.id === clientId ? { ...client, ...clientData } : client
       )
     );
-    showSuccess(`Client ${clientData.fullName} updated successfully!`);
+    showSuccess(`Client updated successfully!`);
   };
 
   const deleteClient = (clientId: string) => {

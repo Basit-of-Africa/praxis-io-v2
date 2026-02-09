@@ -2,11 +2,24 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Users, Calendar, Settings } from "lucide-react";
+import {
+  Home,
+  Users,
+  Calendar,
+  Settings,
+  Stethoscope,
+  DollarSign,
+  FileText,
+  MessageSquare,
+  UsersRound,
+  BookOpen,
+  BarChart3,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navItems = [
   {
@@ -15,14 +28,49 @@ const navItems = [
     path: "/",
   },
   {
+    name: "Calendar",
+    icon: Calendar,
+    path: "/calendar",
+  },
+  {
     name: "Clients",
     icon: Users,
     path: "/clients",
   },
   {
-    name: "Calendar",
-    icon: Calendar,
-    path: "/calendar",
+    name: "Providers",
+    icon: Stethoscope,
+    path: "/providers",
+  },
+  {
+    name: "Messaging",
+    icon: MessageSquare,
+    path: "/messaging",
+  },
+  {
+    name: "Group Sessions",
+    icon: UsersRound,
+    path: "/group-sessions",
+  },
+  {
+    name: "Programs",
+    icon: BookOpen,
+    path: "/programs",
+  },
+  {
+    name: "Charting",
+    icon: FileText,
+    path: "/charting",
+  },
+  {
+    name: "Billing",
+    icon: DollarSign,
+    path: "/billing",
+  },
+  {
+    name: "Analytics",
+    icon: BarChart3,
+    path: "/analytics",
   },
   {
     name: "Settings",
@@ -36,9 +84,10 @@ const Sidebar = () => {
   const isMobile = useIsMobile();
 
   if (isMobile) {
+    const primaryItems = navItems.slice(0, 5);
     return (
       <nav className="fixed bottom-0 left-0 right-0 bg-sidebar border-t border-sidebar-border z-50 flex justify-around p-2">
-        {navItems.map((item) => (
+        {primaryItems.map((item) => (
           <Link key={item.name} to={item.path} className="flex-1">
             <Button
               variant="ghost"
@@ -57,26 +106,28 @@ const Sidebar = () => {
   }
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-10 w-14 flex-col border-r bg-sidebar sm:flex">
-      <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-        {navItems.map((item) => (
-          <Tooltip key={item.name}>
-            <TooltipTrigger asChild>
-              <Link
-                to={item.path}
-                className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-lg text-sidebar-foreground transition-colors hover:text-sidebar-accent-foreground md:h-8 md:w-8",
-                  location.pathname === item.path && "bg-sidebar-accent text-sidebar-accent-foreground",
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                <span className="sr-only">{item.name}</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">{item.name}</TooltipContent>
-          </Tooltip>
-        ))}
-      </nav>
+    <aside className="fixed inset-y-0 left-0 z-10 w-16 flex-col border-r bg-sidebar sm:flex">
+      <ScrollArea className="flex-1">
+        <nav className="flex flex-col items-center gap-3 px-2 py-5">
+          {navItems.map((item) => (
+            <Tooltip key={item.name}>
+              <TooltipTrigger asChild>
+                <Link
+                  to={item.path}
+                  className={cn(
+                    "flex h-10 w-10 items-center justify-center rounded-lg text-sidebar-foreground transition-colors hover:text-sidebar-accent-foreground hover:bg-sidebar-accent",
+                    location.pathname === item.path && "bg-sidebar-accent text-sidebar-accent-foreground",
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="sr-only">{item.name}</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">{item.name}</TooltipContent>
+            </Tooltip>
+          ))}
+        </nav>
+      </ScrollArea>
     </aside>
   );
 };
